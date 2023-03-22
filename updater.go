@@ -84,7 +84,7 @@ func (u *Updater) CheckNow() error {
 			return err
 		}
 
-		v = &Version{Date: mtime}
+		v = &Version{Date: mtime.In(time.UTC)}
 	}
 
 	latest, err := u.conf.Source.LatestVersion()
