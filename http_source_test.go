@@ -14,7 +14,7 @@ import (
 
 func TestHTTPSourceLatestVersion(t *testing.T) {
 	client := http.Client{Timeout: time.Duration(60) * time.Second}
-	httpSource := NewHTTPSource(&client, "http://geoffrey-test-artefacts.fynelabs.com/nomad-windows-amd64.exe")
+	httpSource := NewHTTPSource(&client, "http://geoffrey-test-artefacts.fynelabs.com/self-update/Nomad.exe")
 
 	version, err := httpSource.LatestVersion()
 	assert.Nil(t, err)
@@ -24,10 +24,10 @@ func TestHTTPSourceLatestVersion(t *testing.T) {
 func TestHTTPSourceCheckSignature(t *testing.T) {
 	client := http.Client{Timeout: time.Duration(60) * time.Second}
 
-	publicKey := ed25519.PublicKey{178, 103, 83, 57, 61, 138, 18, 249, 244, 80, 163, 162, 24, 251, 190, 241, 11, 168, 179, 41, 245, 27, 166, 70, 220, 254, 118, 169, 101, 26, 199, 129}
+	publicKey := ed25519.PublicKey{231, 120, 42, 245, 227, 182, 133, 19, 197, 251, 215, 216, 34, 35, 16, 183, 184, 174, 55, 30, 107, 18, 43, 136, 111, 68, 168, 138, 176, 212, 156, 124}
 	wrongPublicKey := ed25519.PublicKey{42, 103, 83, 57, 61, 138, 18, 249, 244, 80, 163, 162, 24, 251, 190, 241, 11, 168, 179, 41, 245, 27, 166, 70, 220, 254, 118, 169, 101, 26, 199, 129}
 
-	httpSource := NewHTTPSource(&client, "http://geoffrey-test-artefacts.fynelabs.com/nomad-windows-amd64.exe")
+	httpSource := NewHTTPSource(&client, "http://geoffrey-test-artefacts.fynelabs.com/self-update/Nomad.exe")
 	signature, err := httpSource.GetSignature()
 	assert.Nil(t, err)
 
@@ -35,7 +35,7 @@ func TestHTTPSourceCheckSignature(t *testing.T) {
 	log.Println(file, " -- ", err)
 	assert.Nil(t, err)
 	assert.NotNil(t, file)
-	assert.Equal(t, int64(32099400), contentLength)
+	assert.Equal(t, int64(19320832), contentLength)
 
 	body, err := ioutil.ReadAll(file)
 	assert.Nil(t, err)
