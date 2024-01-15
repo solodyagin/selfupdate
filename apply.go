@@ -76,10 +76,12 @@ func apply(update io.Reader, opts *Options) error {
 
 	// get target path
 	var err error
-	opts.TargetPath, err = opts.getPath()
+	err = LoadPath()
 	if err != nil {
 		return err
 	}
+	// ignore err since handled after LoadPath
+	opts.TargetPath, _ = opts.getPath()
 
 	var newBytes []byte
 	if opts.Patcher != nil {
@@ -106,12 +108,9 @@ func apply(update io.Reader, opts *Options) error {
 		}
 	}
 
-	// get the directory the executable exists in
-	updateDir := filepath.Dir(opts.TargetPath)
-	filename := filepath.Base(opts.TargetPath)
-
 	// Copy the contents of newbinary to a new executable file
-	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
+	// ignore err since handled after LoadPath
+	newPath, _ := GetExecutableNewPath()
 	fp, err := openFile(newPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, opts.TargetMode)
 	if err != nil {
 		return err
@@ -133,7 +132,8 @@ func apply(update io.Reader, opts *Options) error {
 	oldPath := opts.OldSavePath
 	removeOld := opts.OldSavePath == ""
 	if removeOld {
-		oldPath = filepath.Join(updateDir, fmt.Sprintf(".%s.old", filename))
+		// ignore err since handled after LoadPath
+		oldPath, _ = GetExecutableDefaultOldPath()
 	}
 
 	// delete any existing old exec file - this is necessary on Windows for two reasons:
