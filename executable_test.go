@@ -12,7 +12,7 @@ func TestAlwaysFindExecutableTime(t *testing.T) {
 }
 
 func TestAlwaysFindExecutable(t *testing.T) {
-	exe, err := getExecutableRealPath()
+	exe, err := GetExecutableRealPath()
 	assert.Nil(t, err)
 	assert.NotEmpty(t, exe)
 }

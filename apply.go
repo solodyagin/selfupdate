@@ -277,7 +277,7 @@ func (o *Options) SetPublicKeyPEM(pembytes []byte) error {
 
 func (o *Options) getPath() (string, error) {
 	if o.TargetPath == "" {
-		return getExecutableRealPath()
+		return GetExecutableRealPath()
 	}
 	return o.TargetPath, nil
 }

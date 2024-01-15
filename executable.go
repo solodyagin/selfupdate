@@ -9,7 +9,7 @@ import (
 )
 
 func lastModifiedExecutable() (time.Time, error) {
-	exe, err := getExecutableRealPath()
+	exe, err := GetExecutableRealPath()
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -22,7 +22,7 @@ func lastModifiedExecutable() (time.Time, error) {
 	return fi.ModTime(), nil
 }
 
-func getExecutableRealPath() (string, error) {
+func GetExecutableRealPath() (string, error) {
 	exe, err := osext.Executable()
 	if err != nil {
 		return "", err
