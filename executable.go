@@ -55,7 +55,7 @@ func loadPath() (string, string, string, error) {
 	updateDir := filepath.Dir(exePath)
 	filename := filepath.Base(exePath)
 
-	// Copy the contents of newbinary to a new executable file
+	// get file paths to new and old executable file paths
 	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
 	oldPath := filepath.Join(updateDir, fmt.Sprintf(".%s.old", filename))
 	return exePath, oldPath, newPath, nil
