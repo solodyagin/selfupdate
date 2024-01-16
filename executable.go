@@ -18,21 +18,21 @@ var (
 	once              sync.Once
 )
 
-func GetExecutableRealPath() (string, error) {
+func ExecutableRealPath() (string, error) {
 	if LoadPath() != nil {
 		return "", exeErr
 	}
 	return exePath, nil
 }
 
-func GetExecutableDefaultOldPath() (string, error) {
+func ExecutableDefaultOldPath() (string, error) {
 	if LoadPath() != nil {
 		return "", exeErr
 	}
 	return defaultOldExePath, nil
 }
 
-func GetExecutableNewPath() (string, error) {
+func ExecutableNewPath() (string, error) {
 	if LoadPath() != nil {
 		return "", exeErr
 	}
@@ -62,7 +62,7 @@ func loadPath() (string, string, string, error) {
 }
 
 func lastModifiedExecutable() (time.Time, error) {
-	exe, err := GetExecutableRealPath()
+	exe, err := ExecutableRealPath()
 	if err != nil {
 		return time.Time{}, err
 	}

@@ -15,7 +15,7 @@ func TestAlwaysFindExecutableTime(t *testing.T) {
 }
 
 func TestAlwaysFindExecutable(t *testing.T) {
-	exe, err := GetExecutableRealPath()
+	exe, err := ExecutableRealPath()
 	ext := filepath.Ext(exe)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, exe)
@@ -27,7 +27,7 @@ func TestAlwaysFindExecutable(t *testing.T) {
 }
 
 func TestAlwaysFindOldExecutable(t *testing.T) {
-	exe, err := GetExecutableDefaultOldPath()
+	exe, err := ExecutableDefaultOldPath()
 	ext := filepath.Ext(exe)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, exe)
@@ -35,7 +35,7 @@ func TestAlwaysFindOldExecutable(t *testing.T) {
 }
 
 func TestAlwaysFindNewExecutable(t *testing.T) {
-	exe, err := GetExecutableNewPath()
+	exe, err := ExecutableNewPath()
 	ext := filepath.Ext(exe)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, exe)
