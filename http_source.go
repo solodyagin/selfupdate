@@ -128,7 +128,7 @@ func replaceURLTemplate(base string) string {
 		Ext:  ext,
 	}
 
-	exe, err := getExecutableRealPath()
+	exe, err := ExecutableRealPath()
 	if err != nil {
 		exe = filepath.Base(os.Args[0])
 	} else {
