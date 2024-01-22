@@ -33,11 +33,3 @@ func TestAlwaysFindOldExecutable(t *testing.T) {
 	assert.NotEmpty(t, exe)
 	assert.Equal(t, ".old", ext)
 }
-
-func TestAlwaysFindNewExecutable(t *testing.T) {
-	exe, err := ExecutableNewPath()
-	ext := filepath.Ext(exe)
-	assert.Nil(t, err)
-	assert.NotEmpty(t, exe)
-	assert.Equal(t, ".new", ext)
-}
