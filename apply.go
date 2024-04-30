@@ -312,7 +312,7 @@ func (o *Options) verifySignature(updated []byte) error {
 	if publicKey, ok := o.PublicKey.(ed25519.PublicKey); ok {
 		valid := ed25519.Verify(publicKey, updated, o.Signature)
 		if !valid {
-			return fmt.Errorf("invalid ed25519 signature")
+			return errors.New("invalid ed25519 signature")
 		}
 		return nil
 	}
