@@ -16,6 +16,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+
+	"github.com/fynelabs/selfupdate/internal/build"
 )
 
 const (
@@ -76,7 +78,9 @@ func TestExecutableMatch(t *testing.T) {
 		t.Fatalf("Child returned %q, want an absolute path", out)
 	}
 
-	t.Skip() // Executables to not match with coverage data embedded.
+	if build.IsCI {
+		return // Executables to not match with coverage data embedded.
+	}
 
 	if !sameFile(outs, ep) {
 		t.Fatalf("Child returned %q, not the same file as %q", out, ep)
@@ -136,7 +140,9 @@ func TestExecutableDelete(t *testing.T) {
 		t.Fatalf("Child returned %q, want an absolute path", childPath)
 	}
 
-	t.Skip() // Executables to not match with coverage data embedded.
+	if build.IsCI {
+		return // Executables to not match with coverage data embedded.
+	}
 
 	if !sameFile(childPath, fpath) {
 		t.Fatalf("Child returned %q, not the same file as %q", childPath, fpath)
