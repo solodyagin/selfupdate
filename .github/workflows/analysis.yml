@@ -15,7 +15,7 @@ jobs:
         persist-credentials: false
     - uses: WillAbides/setup-go-faster@v1
       with:
-        go-version: '1.22.x'
+        go-version: 'stable'
 
     - name: Get dependencies
       run: >-
@@ -52,7 +52,7 @@ jobs:
     - name: Update coverage
       run: |
         set -e
-        go test -tags ci -covermode=atomic -coverprofile=coverage.out ./...
+        go test -tags coverage -covermode=atomic -coverprofile=coverage.out ./...
 
     - name: Update PR Coverage
       uses: shogo82148/actions-goveralls@v1

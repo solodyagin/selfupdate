@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: ['1.19.x', '1.22.x']
+        go-version: ['1.19.x', 'stable']
 
     steps:
     - uses: actions/checkout@v4
@@ -24,4 +24,4 @@ jobs:
       run: sudo apt-get update && sudo apt-get install bsdiff
 
     - name: Test
-      run: go test -tags ci ./...
+      run: go test ./...

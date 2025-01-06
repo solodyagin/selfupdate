@@ -78,7 +78,7 @@ func TestExecutableMatch(t *testing.T) {
 		t.Fatalf("Child returned %q, want an absolute path", out)
 	}
 
-	if build.IsCI {
+	if build.HasCoverage {
 		return // Executables to not match with coverage data embedded.
 	}
 
@@ -140,7 +140,7 @@ func TestExecutableDelete(t *testing.T) {
 		t.Fatalf("Child returned %q, want an absolute path", childPath)
 	}
 
-	if build.IsCI {
+	if build.HasCoverage {
 		return // Executables to not match with coverage data embedded.
 	}
 
