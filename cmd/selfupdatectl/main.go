@@ -18,6 +18,7 @@ func main() {
 			check(),
 			keyPrint(),
 			s3upload(),
+			minioUpload(),
 		},
 	}
 

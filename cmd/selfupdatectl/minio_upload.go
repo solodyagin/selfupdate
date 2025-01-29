@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type awsConfig struct {
+type minioConfig struct {
 	endpoint   string
 	region     string
 	bucket     string
@@ -17,14 +17,14 @@ type awsConfig struct {
 	baseS3Path string
 }
 
-func s3upload() *cli.Command {
+func minioUpload() *cli.Command {
 	a := &application{}
-	config := &awsConfig{}
+	config := &minioConfig{}
 
 	return &cli.Command{
-		Name:        "s3upload",
-		Usage:       "Upload an executable file to S3, it will be signed and the signature uploaded too",
-		Description: "The executable specified will get its signature generated and checked before being uploaded to a S3 bucket location specified as the last arguments.",
+		Name:        "minio-upload",
+		Usage:       "Upload an executable file to MinIO, it will be signed and the signature uploaded too",
+		Description: "The executable specified will get its signature generated and checked before being uploaded to a MinIO bucket location specified as the last arguments.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "private-key",
@@ -43,44 +43,44 @@ func s3upload() *cli.Command {
 			&cli.StringFlag{
 				Name:        "aws-endpoint",
 				Aliases:     []string{"e"},
-				Usage:       "AWS endpoint to connect to (can be used to connect to non AWS S3 services)",
+				Usage:       "MinIO endpoint to connect to (can be used to connect to non MinIO services)",
 				EnvVars:     []string{"AWS_S3_ENDPOINT"},
 				Destination: &config.endpoint,
 			},
 			&cli.StringFlag{
 				Name:        "aws-region",
 				Aliases:     []string{"r"},
-				Usage:       "AWS region to connect to",
+				Usage:       "MinIO region to connect to",
 				EnvVars:     []string{"AWS_S3_REGION"},
 				Destination: &config.region,
 			},
 			&cli.StringFlag{
 				Name:        "aws-bucket",
 				Aliases:     []string{"b"},
-				Usage:       "AWS bucket to store data into",
+				Usage:       "MinIO bucket to store data into",
 				EnvVars:     []string{"AWS_S3_BUCKET"},
 				Destination: &config.bucket,
 			},
 			&cli.StringFlag{
 				Name:        "aws-secret",
 				Aliases:     []string{"s"},
-				Usage:       "AWS secret to use to establish S3 connection",
+				Usage:       "MinIO secret to use to establish connection",
 				Destination: &config.secret,
 			},
 			&cli.StringFlag{
 				Name:        "aws-AKID",
 				Aliases:     []string{"a"},
-				Usage:       "AWS Access Key ID to use to establish S3 connection",
+				Usage:       "MinIO Access Key ID to use to establish connection",
 				Destination: &config.akid,
 			},
 		},
 		Action: func(ctx *cli.Context) error {
 			if ctx.Args().Len() != 2 {
-				return fmt.Errorf("one executable and a S3 target path need to be specified")
+				return fmt.Errorf("one executable and a target path need to be specified")
 			}
 
-			log.Println("Connecting to AWS")
-			aws, err := cloud.NewAWSSession(config.akid, config.secret, config.endpoint, config.region, config.bucket)
+			log.Println("Connecting to MinIO")
+			c, err := cloud.NewMinIOClient(config.akid, config.secret, config.endpoint, config.region, config.bucket)
 			if err != nil {
 				return err
 			}
@@ -90,7 +90,7 @@ func s3upload() *cli.Command {
 			exe := ctx.Args().First()
 			s3path := buildS3Path(config.baseS3Path, exe)
 
-			err = a.s3upload(aws, exe, s3path)
+			err = a.minioUpload(c, exe, s3path)
 			if err != nil {
 				return err
 			}
@@ -99,7 +99,7 @@ func s3upload() *cli.Command {
 	}
 }
 
-func (a *application) s3upload(aws *cloud.AWSSession, executable string, destination string) error {
+func (a *application) minioUpload(client *cloud.MinIOClient, executable string, destination string) error {
 	if a.check(executable) != nil {
 		if err := a.sign(executable); err != nil {
 			return err
@@ -109,25 +109,25 @@ func (a *application) s3upload(aws *cloud.AWSSession, executable string, destina
 		}
 	}
 
-	err := aws.UploadFile(executable, destination)
+	err := client.UploadFile(executable, destination)
 	if err != nil {
 		return err
 	}
 	fmt.Println()
 
 	defer fmt.Println()
-	return aws.UploadFile(executable+".ed25519", destination+".ed25519")
+	return client.UploadFile(executable+".ed25519", destination+".ed25519")
 }
 
-func buildS3Path(baseS3Path string, exe string) string {
-	s3path := ""
-	if baseS3Path != "" {
-		s3path = baseS3Path
-		if baseS3Path[len(baseS3Path)-1] != '/' {
-			s3path += "/"
-		}
-	}
-	s3path += exe
+// func buildS3Path(baseS3Path string, exe string) string {
+// 	s3path := ""
+// 	if baseS3Path != "" {
+// 		s3path = baseS3Path
+// 		if baseS3Path[len(baseS3Path)-1] != '/' {
+// 			s3path += "/"
+// 		}
+// 	}
+// 	s3path += exe
 
-	return s3path
-}
+// 	return s3path
+// }

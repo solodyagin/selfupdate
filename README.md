@@ -1,7 +1,7 @@
 # self-update: Build self-updating Fyne programs
 
-[![godoc reference](https://godoc.org/github.com/fynelabs/selfupdate?status.png)](https://godoc.org/github.com/fynelabs/selfupdate)
-[![Coverage Status](https://coveralls.io/repos/github/fynelabs/selfupdate/badge.svg?branch=main)](https://coveralls.io/github/fynelabs/selfupdate?branch=main)
+[![godoc reference](https://godoc.org/github.com/solodyagin/selfupdate?status.png)](https://godoc.org/github.com/solodyagin/selfupdate)
+[![Coverage Status](https://coveralls.io/repos/github/solodyagin/selfupdate/badge.svg?branch=main)](https://coveralls.io/github/fynelabs/selfupdate?branch=main)
 
 Package update provides functionality to implement secure, self-updating Fyne programs (or other single-file targets)
 
@@ -20,7 +20,7 @@ import (
     "fmt"
     "net/http"
 
-    "github.com/fynelabs/selfupdate"
+    "github.com/solodyagin/selfupdate"
 )
 
 func doUpdate(url string) error {
@@ -49,7 +49,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/fynelabs/selfupdate"
+	"github.com/solodyagin/selfupdate"
 )
 
 func main() {
@@ -83,7 +83,7 @@ func main() {
 
 If you desire a GUI element and visual integration with Fyne, you should check [fyneselfupdate](https://github.com/fynelabs/fyneselfupdate).
 
-To help you manage your key, sign binary and upload them to an online S3 bucket the `selfupdatectl` tool is provided. You can check its documentation [here](https://github.com/fynelabs/selfupdate/tree/main/cmd/selfupdatectl).
+To help you manage your key, sign binary and upload them to an online S3 bucket the `selfupdatectl` tool is provided. You can check its documentation [here](https://github.com/solodyagin/selfupdate/tree/main/cmd/selfupdatectl).
 
 ## Logging
 
@@ -112,17 +112,21 @@ Most logger module in the go ecosystem do provide an API that match the `log.Pri
 - Support for updating arbitrary files
 
 ## API Compatibility Promises
-The main branch of `selfupdate` is *not* guaranteed to have a stable API over time. Still we will try hard to not break its API unecessarily and will follow a proper versioning of our release when necessary.
+
+The main branch of `selfupdate` is _not_ guaranteed to have a stable API over time. Still we will try hard to not break its API unecessarily and will follow a proper versioning of our release when necessary.
 
 The `selfupdate` package makes the following promises about API compatibility:
+
 1. A list of all API-breaking changes will be documented in this README.
 1. `selfupdate` will strive for as few API-breaking changes as possible.
 
 ## API Breaking Changes
+
 - **May 30, 2022**: Many changes moving to a new API that will be supported going forward.
 - **June 22, 2022**: First tagged release, v0.1.0.
 
 ## License
+
 Apache
 
 ## Sponsors
