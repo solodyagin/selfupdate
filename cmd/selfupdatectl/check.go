@@ -17,7 +17,7 @@ func check() *cli.Command {
 
 	return &cli.Command{
 		Name:        "check",
-		Usage:       "Check that a signature for a Fyne binary is correct",
+		Usage:       "Check that a signature for a Go binary is correct",
 		Description: "You must specify the executable and may specify a filename for the Public Key you want to use.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{

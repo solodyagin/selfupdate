@@ -2,7 +2,6 @@ package cloud
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -16,17 +15,8 @@ import (
 
 // AWSSession represent a live session to AWS services
 type AWSSession struct {
-	s      *session.Session
+	sess   *session.Session
 	bucket string
-}
-
-// Exists return true if a path does really exist
-func Exists(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil {
-		return !errors.Is(err, os.ErrNotExist)
-	}
-	return true
 }
 
 // NewAWSSessionFromEnvironment create a new session from environment variable.
@@ -36,34 +26,32 @@ func NewAWSSessionFromEnvironment() (*AWSSession, error) {
 }
 
 // NewAWSSession create a new session
-func NewAWSSession(akid string, secret string, endpoint string, region string, bucket string) (*AWSSession, error) {
-	var cred *credentials.Credentials
+func NewAWSSession(accessKey string, secret string, endpoint string, region string, bucket string) (*AWSSession, error) {
+	var creds *credentials.Credentials
 
-	if akid != "" && secret != "" {
-		cred = credentials.NewStaticCredentials(akid, secret, "")
+	if accessKey != "" && secret != "" {
+		creds = credentials.NewStaticCredentials(accessKey, secret, "")
 	}
 
-	s, err := session.NewSession(
-		&aws.Config{
-			Endpoint:    aws.String(endpoint),
-			Region:      aws.String(region),
-			Credentials: cred,
-		},
-	)
+	sess, err := session.NewSession(&aws.Config{
+		Endpoint:    aws.String(endpoint),
+		Region:      aws.String(region),
+		Credentials: creds,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &AWSSession{s: s, bucket: bucket}, nil
+	return &AWSSession{sess: sess, bucket: bucket}, nil
 }
 
 // GetCredentials from the established session
-func (a *AWSSession) GetCredentials() (credentials.Value, error) {
-	return a.s.Config.Credentials.Get()
+func (s *AWSSession) GetCredentials() (credentials.Value, error) {
+	return s.sess.Config.Credentials.Get()
 }
 
 // UploadFile to a S3 bucket
-func (a *AWSSession) UploadFile(localFile string, s3FilePath string) error {
+func (s *AWSSession) UploadFile(localFile string, s3FilePath string) error {
 	file, err := os.Open(localFile)
 	if err != nil {
 		return err
@@ -77,21 +65,20 @@ func (a *AWSSession) UploadFile(localFile string, s3FilePath string) error {
 
 	pa := &progressAWS{File: file, file: s3FilePath, contentLength: st.Size()}
 
-	uploader := s3manager.NewUploader(a.s)
+	uploader := s3manager.NewUploader(s.sess)
 
 	_, err = uploader.UploadWithContext(context.Background(), &s3manager.UploadInput{
-		Bucket: aws.String(a.bucket),
+		Bucket: aws.String(s.bucket),
 		Key:    aws.String(s3FilePath),
-
-		Body: pa,
+		Body:   pa,
 	})
 
 	return err
 }
 
 // GetBucket associated with a session
-func (a *AWSSession) GetBucket() string {
-	return a.bucket
+func (s *AWSSession) GetBucket() string {
+	return s.bucket
 }
 
 type progressAWS struct {

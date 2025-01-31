@@ -1,6 +1,8 @@
-# selfupdatectl: Manage deployment of self updating Fyne programs [![godoc reference](https://godoc.org/github.com/fynelabs/self-update?status.png)](https://godoc.org/github.com/fynelabs/self-update)
+# selfupdatectl: Manage deployment of self updating Go programs
 
-_selfupdatectl_ provide the ability to generate private and public key that can be used to sign and verify Fyne program to finally upload them to a S3 bucket.
+[![godoc reference](https://godoc.org/github.com/solodyagin/selfupdate?status.png)](https://godoc.org/github.com/solodyagin/selfupdate)
+
+_selfupdatectl_ provide the ability to generate private and public key that can be used to sign and verify Go program to finally upload them to a S3 bucket.
 
 To install _selfupdatectl_ you should do:
 
@@ -31,6 +33,10 @@ This will generate a file named **myprogram.ed25519** of size 64 bytes that cont
 
 To verify that your binary was properly signed, just call `selfupdatectl check myprogram`. It will error if there is a problem with your signature.
 
-## _selfupdatectl s3upload myprogram targetS3Path_
+## _selfupdatectl aws-upload myprogram targetS3Path_
 
-You can use `selfupdatectl s3uploads myprogram-windows-amd64 targetS3PAth` to automate signing your program and uploading to a target AWS S3 path. If no additional parameter are specified, it will try to read AWS information from configuration file and environment variable. Usually you would need to set _$AWS_S3_REGION_ and _$AWS_S3_BUCKET_ to match your need.
+You can use `selfupdatectl aws-upload myprogram-windows-amd64 targetS3PAth` to automate signing your program and uploading to a target AWS S3 path. If no additional parameter are specified, it will try to read AWS information from configuration file and environment variable. Usually you would need to set _$AWS_S3_REGION_ and _$AWS_S3_BUCKET_ to match your need.
+
+## _selfupdatectl minio-upload myprogram targetS3Path_
+
+You can use `selfupdatectl minio-upload myprogram-windows-amd64 targetS3PAth` to automate signing your program and uploading to a target MinIO S3 path. If no additional parameter are specified, it will try to read MinIO information from configuration file and environment variable. Usually you would need to set _$MINIO_REGION_ and _$MINIO_BUCKET_ to match your need.

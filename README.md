@@ -1,9 +1,9 @@
-# self-update: Build self-updating Fyne programs
+# selfupdate: Build self-updating Go programs
 
 [![godoc reference](https://godoc.org/github.com/solodyagin/selfupdate?status.png)](https://godoc.org/github.com/solodyagin/selfupdate)
-[![Coverage Status](https://coveralls.io/repos/github/solodyagin/selfupdate/badge.svg?branch=main)](https://coveralls.io/github/fynelabs/selfupdate?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/solodyagin/selfupdate/badge.svg?branch=main)](https://coveralls.io/github/solodyagin/selfupdate?branch=main)
 
-Package update provides functionality to implement secure, self-updating Fyne programs (or other single-file targets)
+Package update provides functionality to implement secure, self-updating Go programs (or other single-file targets)
 
 A program can update itself by replacing its executable file with a new version.
 
@@ -39,7 +39,7 @@ func doUpdate(url string) error {
 
 ## Managed update
 
-To help make self updating Fyne application a new API and a tool, `selfupdatectl` have been introduced. The new API allow to provide a source where to get an update, configure a schedule for the update and a ed25519 public key to ensure that the update is only applied if they come from the proper source.
+To help make self updating Go application a new API and a tool, `selfupdatectl` have been introduced. The new API allow to provide a source where to get an update, configure a schedule for the update and a ed25519 public key to ensure that the update is only applied if they come from the proper source.
 
 Example with the new API:
 
@@ -80,8 +80,6 @@ func main() {
 	<-done
 }
 ```
-
-If you desire a GUI element and visual integration with Fyne, you should check [fyneselfupdate](https://github.com/fynelabs/fyneselfupdate).
 
 To help you manage your key, sign binary and upload them to an online S3 bucket the `selfupdatectl` tool is provided. You can check its documentation [here](https://github.com/solodyagin/selfupdate/tree/main/cmd/selfupdatectl).
 
@@ -128,11 +126,3 @@ The `selfupdate` package makes the following promises about API compatibility:
 ## License
 
 Apache
-
-## Sponsors
-
-This project is kindly sponsored by the following companies:
-
-<a href="https://dentagraphics.com/" style="text-decoration: none">
-<img width="190" src="img/sponsor/dentagraphics.jpg" />
-</a>

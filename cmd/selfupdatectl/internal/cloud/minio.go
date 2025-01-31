@@ -2,48 +2,59 @@ package cloud
 
 import (
 	"context"
+	"net/url"
 	"os"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type MinIOClient struct {
-	c      *minio.Client
+type MinIOSession struct {
+	sess   *minio.Client
 	bucket string
 }
 
-// NewMinIOClientFromEnvironment create a new client from environment variable.
-// This will be looking for the environment variable AWS_S3_ENDPOINT, AWS_S3_REGION and AWS_S3_BUCKET
-func NewMinIOClientFromEnvironment() (*MinIOClient, error) {
-	return NewMinIOClient("", "", os.Getenv("AWS_S3_ENDPOINT"), os.Getenv("AWS_S3_REGION"), os.Getenv("AWS_S3_BUCKET"))
+// NewMinIOSessionFromEnvironment create a new session from environment variable.
+// This will be looking for the environment variable MINIO_ENDPOINT, MINIO_REGION and MINIO_BUCKET
+func NewMinIOSessionFromEnvironment() (*MinIOSession, error) {
+	return NewMinIOSession("", "", os.Getenv("MINIO_ENDPOINT"), os.Getenv("MINIO_REGION"), os.Getenv("MINIO_BUCKET"))
 }
 
-// NewMinIOClient create a new client
-func NewMinIOClient(akid string, secret string, endpoint string, region string, bucket string) (*MinIOClient, error) {
-	var cred *credentials.Credentials
+// NewMinIOSession create a new session
+func NewMinIOSession(accessKey string, secret string, endpoint string, region string, bucket string) (*MinIOSession, error) {
+	var creds *credentials.Credentials
 
-	if akid != "" && secret != "" {
-		cred = credentials.NewStaticV4(akid, secret, "")
+	if accessKey != "" && secret != "" {
+		creds = credentials.NewStaticV4(accessKey, secret, "")
 	}
 
-	c, err := minio.New(endpoint, &minio.Options{
-		Creds:  cred,
-		Secure: true,
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, err
+	}
+	secure := true
+	if u.Scheme == "http" {
+		secure = false
+	}
+	endpoint = u.Host + u.Path
+
+	sess, err := minio.New(endpoint, &minio.Options{
+		Creds:  creds,
+		Secure: secure,
 		Region: region,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &MinIOClient{c: c, bucket: bucket}, nil
+	return &MinIOSession{sess: sess, bucket: bucket}, nil
 }
 
-// UploadFile to a MinIO bucket
-func (a *MinIOClient) UploadFile(localFile string, s3FilePath string) error {
+// UploadFile to a MinIO S3 bucket
+func (s *MinIOSession) UploadFile(localFile string, s3FilePath string) error {
 	ctx := context.Background()
 
-	_, err := a.c.FPutObject(ctx, a.bucket, s3FilePath, localFile, minio.PutObjectOptions{})
+	_, err := s.sess.FPutObject(ctx, s.bucket, s3FilePath, localFile, minio.PutObjectOptions{})
 	if err != nil {
 		return err
 	}
@@ -51,7 +62,7 @@ func (a *MinIOClient) UploadFile(localFile string, s3FilePath string) error {
 	return err
 }
 
-// GetBucket associated with a client
-func (a *MinIOClient) GetBucket() string {
-	return a.bucket
+// GetBucket associated with a session
+func (s *MinIOSession) GetBucket() string {
+	return s.bucket
 }

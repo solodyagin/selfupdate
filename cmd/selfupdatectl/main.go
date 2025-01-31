@@ -11,13 +11,13 @@ func main() {
 	app := &cli.App{
 		Name:        "selfupdatectl",
 		Usage:       "A command line helper for various selfupdate tools.",
-		Description: "The selfupdatectl command provides tooling for self updating fyne applications.",
+		Description: "The selfupdatectl command provides tooling for self updating Go applications.",
 		Commands: []*cli.Command{
 			createKeys(),
 			sign(),
 			check(),
 			keyPrint(),
-			s3upload(),
+			awsUpload(),
 			minioUpload(),
 		},
 	}
