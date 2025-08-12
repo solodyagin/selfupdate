@@ -11,13 +11,6 @@ import (
 // ErrNotSupported is returned by `Manage` when it is not possible to manage the current application.
 var ErrNotSupported = errors.New("operating system not supported")
 
-// Source define an interface that is able to get an update
-type Source interface {
-	Get(*Version) (io.ReadCloser, int64, error) // Get the executable to be updated to
-	GetSignature() ([64]byte, error)            // Get the signature that match the executable
-	LatestVersion() (*Version, error)           // Get the latest version information to determine if we should trigger an update
-}
-
 // Config define extra parameter necessary to manage the updating process
 type Config struct {
 	Current   *Version          // If present will define the current version of the executable that need update

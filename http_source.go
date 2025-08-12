@@ -6,11 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
-	"text/template"
 )
 
 // HTTPSource provide a Source that will download the update from a HTTP url.
@@ -115,41 +110,4 @@ func (h *HTTPSource) LatestVersion() (*Version, error) {
 	}
 
 	return &Version{Date: t}, nil
-}
-
-func replaceURLTemplate(base string) string {
-	ext := ""
-	if runtime.GOOS == "windows" {
-		ext = ".exe"
-	}
-
-	p := platform{
-		OS:   runtime.GOOS,
-		Arch: runtime.GOARCH,
-		Ext:  ext,
-	}
-
-	exe, err := ExecutableRealPath()
-	if err != nil {
-		exe = filepath.Base(os.Args[0])
-	} else {
-		exe = filepath.Base(exe)
-	}
-	if runtime.GOOS == "windows" {
-		p.Executable = exe[:len(exe)-len(".exe")]
-	} else {
-		p.Executable = exe
-	}
-
-	t, err := template.New("platform").Parse(base)
-	if err != nil {
-		return base
-	}
-
-	buf := &strings.Builder{}
-	err = t.Execute(buf, p)
-	if err != nil {
-		return base
-	}
-	return buf.String()
 }

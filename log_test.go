@@ -18,17 +18,17 @@ func TestLog(t *testing.T) {
 	logDebug("debug")
 	assert.False(t, debugCalled)
 
-	LogDebug = func(s string, i ...interface{}) {
+	LogDebug = func(s string, i ...any) {
 		if s == "debug" {
 			debugCalled = true
 		}
 	}
-	LogError = func(s string, i ...interface{}) {
+	LogError = func(s string, i ...any) {
 		if s == "error" {
 			errorCalled = true
 		}
 	}
-	LogInfo = func(s string, i ...interface{}) {
+	LogInfo = func(s string, i ...any) {
 		if s == "info" {
 			infoCalled = true
 		}

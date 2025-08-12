@@ -36,7 +36,3 @@ To verify that your binary was properly signed, just call `selfupdatectl check m
 ## _selfupdatectl aws-upload myprogram targetS3Path_
 
 You can use `selfupdatectl aws-upload myprogram-windows-amd64 targetS3PAth` to automate signing your program and uploading to a target AWS S3 path. If no additional parameter are specified, it will try to read AWS information from configuration file and environment variable. Usually you would need to set _$AWS_S3_REGION_ and _$AWS_S3_BUCKET_ to match your need.
-
-## _selfupdatectl minio-upload myprogram targetS3Path_
-
-You can use `selfupdatectl minio-upload myprogram-windows-amd64 targetS3PAth` to automate signing your program and uploading to a target MinIO S3 path. If no additional parameter are specified, it will try to read MinIO information from configuration file and environment variable. Usually you would need to set _$MINIO_REGION_ and _$MINIO_BUCKET_ to match your need.

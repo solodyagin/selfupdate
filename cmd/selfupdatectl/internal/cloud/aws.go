@@ -7,47 +7,35 @@ import (
 	"os"
 	"sync/atomic"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 // AWSSession represent a live session to AWS services
 type AWSSession struct {
-	sess   *session.Session
+	client *s3.Client
 	bucket string
-}
-
-// NewAWSSessionFromEnvironment create a new session from environment variable.
-// This will be looking for the environment variable AWS_S3_ENDPOINT, AWS_S3_REGION and AWS_S3_BUCKET
-func NewAWSSessionFromEnvironment() (*AWSSession, error) {
-	return NewAWSSession("", "", os.Getenv("AWS_S3_ENDPOINT"), os.Getenv("AWS_S3_REGION"), os.Getenv("AWS_S3_BUCKET"))
 }
 
 // NewAWSSession create a new session
 func NewAWSSession(accessKey string, secret string, endpoint string, region string, bucket string) (*AWSSession, error) {
-	var creds *credentials.Credentials
+	cfg, err := config.LoadDefaultConfig(context.Background(),
+		config.WithRegion(region),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKey, secret, "")),
+	)
 
-	if accessKey != "" && secret != "" {
-		creds = credentials.NewStaticCredentials(accessKey, secret, "")
-	}
-
-	sess, err := session.NewSession(&aws.Config{
-		Endpoint:    aws.String(endpoint),
-		Region:      aws.String(region),
-		Credentials: creds,
+	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.BaseEndpoint = aws.String(endpoint)
+		o.UsePathStyle = true // For MinIO or S3-compatible services
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &AWSSession{sess: sess, bucket: bucket}, nil
-}
-
-// GetCredentials from the established session
-func (s *AWSSession) GetCredentials() (credentials.Value, error) {
-	return s.sess.Config.Credentials.Get()
+	return &AWSSession{client: client, bucket: bucket}, nil
 }
 
 // UploadFile to a S3 bucket
@@ -65,20 +53,15 @@ func (s *AWSSession) UploadFile(localFile string, s3FilePath string) error {
 
 	pa := &progressAWS{File: file, file: s3FilePath, contentLength: st.Size()}
 
-	uploader := s3manager.NewUploader(s.sess)
+	uploader := manager.NewUploader(s.client)
 
-	_, err = uploader.UploadWithContext(context.Background(), &s3manager.UploadInput{
+	_, err = uploader.Upload(context.Background(), &s3.PutObjectInput{
 		Bucket: aws.String(s.bucket),
 		Key:    aws.String(s3FilePath),
 		Body:   pa,
 	})
 
 	return err
-}
-
-// GetBucket associated with a session
-func (s *AWSSession) GetBucket() string {
-	return s.bucket
 }
 
 type progressAWS struct {

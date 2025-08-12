@@ -18,7 +18,6 @@ func main() {
 			check(),
 			keyPrint(),
 			awsUpload(),
-			minioUpload(),
 		},
 	}
 
