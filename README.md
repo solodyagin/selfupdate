@@ -1,7 +1,7 @@
 # selfupdate: Build self-updating Go programs
 
 [![godoc reference](https://godoc.org/github.com/solodyagin/selfupdate?status.png)](https://godoc.org/github.com/solodyagin/selfupdate)
-[![Coverage Status](https://coveralls.io/repos/github/solodyagin/selfupdate/badge.svg?branch=main)](https://coveralls.io/github/solodyagin/selfupdate?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/solodyagin/selfupdate/badge.svg)](https://coveralls.io/github/solodyagin/selfupdate)
 
 Package update provides functionality to implement secure, self-updating Go programs (or other single-file targets)
 
